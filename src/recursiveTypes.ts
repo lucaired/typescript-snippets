@@ -20,24 +20,9 @@ function addToList<T>(value: T, node: LinkedList<T>): LinkedList<T> {
   return node;
 }
 
-function replaceAllOccurences<T>(
-  value: T,
-  newValue: T,
-  node: LinkedList<T>
-): LinkedList<T> {
-  if (node.value === value) {
-    node.value = newValue;
-  }
-  if (node.next !== null) {
-    replaceAllOccurences(value, newValue, node.next);
-  }
-  return node;
-}
-
 printList(list);
 addToList(4, list);
 printList(list);
-replaceAllOccurences(4, 5, list);
 
 /**
  * Iterate through the node and when we encounter a list as value, we store the next and
@@ -87,4 +72,5 @@ assert.deepStrictEqual(flattenList(emptyList), {
   value: undefined,
   next: null,
 });
+
 console.log("All assertions passed");
