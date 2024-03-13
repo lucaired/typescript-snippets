@@ -27,6 +27,26 @@ printList(list);
 addToList(4, list);
 printList(list);
 
+function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
+  if (node.value instanceof Array) {
+    // {value: undefined, next: { value: <value>, next: {} }}
+    const newStartNode: LinkedList<T> = {
+      value: undefined,
+      next: null,
+    };
+    let currNode = newStartNode;
+    for (const val of node.value) {
+      // if you use for...in, it will be of type string
+      const newNode = { value: val, next: null };
+      currNode.next = newNode;
+      currNode = newNode;
+    }
+    return newStartNode.next;
+  } else {
+    return node;
+  }
+}
+
 /**
  * Iterate through the node and when we encounter a list as value, we store the next and
  * build a new list from the values. We then add the values one-by-one a list and then we
@@ -36,27 +56,6 @@ printList(list);
  * @returns the flattened list
  */
 function flattenList<T>(node: LinkedList<T>): LinkedList<T> | null {
-
-  function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
-    if (node.value instanceof Array) {
-      // {value: undefined, next: { value: <value>, next: {} }}
-      const newStartNode: LinkedList<T> = {
-        value: undefined,
-        next: null,
-      };
-      let currNode = newStartNode;
-      for (const val of node.value) {
-        // if you use for...in, it will be of type string
-        const newNode = { value: val, next: null };
-        currNode.next = newNode;
-        currNode = newNode;
-      }
-      return newStartNode.next;
-    } else {
-      return node;
-    }
-  }
-
   /**
    * We traverse the list and flatten each node recursively:
    * - if the next element is null, we return the node and flatten its value
