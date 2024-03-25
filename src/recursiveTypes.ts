@@ -27,7 +27,7 @@ printList(list);
 addToList(4, list);
 printList(list);
 
-function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
+export function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
   if (node.value instanceof Array) {
     // {value: undefined, next: { value: <value>, next: {} }}
     const newStartNode: LinkedList<T> = {
@@ -35,11 +35,16 @@ function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
       next: null,
     };
     let currNode = newStartNode;
-    for (const val of node.value) {
+    const oldNext = node.next;
+    const arraySize = node.value.length;
+    for (const [idx, val] of node.value.entries()) {
       // if you use for...in, it will be of type string
       const newNode = { value: val, next: null };
       currNode.next = newNode;
       currNode = newNode;
+      if (idx === arraySize - 1) {
+        currNode.next = oldNext;
+      }
     }
     return newStartNode.next;
   } else {
@@ -55,7 +60,7 @@ function flattenNode<T>(node: LinkedList<T>): LinkedList<T> | null {
  * @param node the head node of the list
  * @returns the flattened list
  */
-function flattenList<T>(node: LinkedList<T>): LinkedList<T> | null {
+export function flattenList<T>(node: LinkedList<T> | null): LinkedList<T> | null {
   /**
    * We traverse the list and flatten each node recursively:
    * - if the next element is null, we return the node and flatten its value
@@ -66,7 +71,11 @@ function flattenList<T>(node: LinkedList<T>): LinkedList<T> | null {
    * @param node 
    * @returns flattened list
    */
-  function traverseAndFlatten(node: LinkedList<T>): LinkedList<T> | null {
+  function traverseAndFlatten(node: LinkedList<T> | null): LinkedList<T> | null {
+    if (node === null) {
+      return null;
+    }
+
     if (node.next === null) {
       return flattenNode(node);
     } else {
@@ -78,31 +87,3 @@ function flattenList<T>(node: LinkedList<T>): LinkedList<T> | null {
   return traverseAndFlatten(node);
 }
 
-const list3 = {
-  value: [1, 2, 3],
-  next: null,
-};
-const emptyList = {
-  value: undefined,
-  next: null,
-};
-console.log("Tested %j ➡️ 👍", list3);
-assert.deepStrictEqual(flattenList(list3), {
-  value: 1,
-  next: { value: 2, next: { value: 3, next: null } },
-});
-console.log("Tested %j ➡️ 👍", emptyList);
-assert.deepStrictEqual(flattenList(emptyList), {
-  value: undefined,
-  next: null,
-});
-const nestedList = {
-  value: 1, next: {
-    value: [2, 3, 4], next: { value: 5, next: null }
-  }
-};
-printList(flattenList(nestedList));
-assert.strictEqual(flattenList(nestedList), { value: 1, next: { value: 2, next: { value: 3, next: { value: 4, next: { value: 5, next: null } } } } });
-console.log("Tested %j ➡️ 👍", nestedList);
-
-console.log("All assertions passed");
