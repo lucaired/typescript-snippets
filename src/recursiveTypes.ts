@@ -8,7 +8,6 @@ function printList<T>(node: LinkedList<T> | null) {
   if (node === null) {
     return;
   }
-  console.log(node.value);
   if (node.next !== null) {
     printList(node.next);
   }
